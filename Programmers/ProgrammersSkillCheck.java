@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class ProgrammersSkillCheck {
 
@@ -14,10 +15,69 @@ public class ProgrammersSkillCheck {
 		
 		//System.out.println(new ProgrammersSkillCheck().level3Problem1(6,4,6,2, new int[][] {{4, 1, 10}, {3, 5, 24}, {5, 6, 2}, {3, 1, 41}, {5, 1, 24}, {4, 6, 50}, {2, 4, 66}, {2, 3, 22}, {1, 6, 25}}));
 		
-		System.out.println(new ProgrammersSkillCheck().level3Problem2(8,2, new String[] {"D 2","C","U 3","C","D 4","C","U 2","Z","Z"}));
-		System.out.println(new ProgrammersSkillCheck().level3Problem2(8,2, new String[] {"D 2","C","U 3","C","D 4","C","U 2","Z","Z","U 1","C"}));
+		//System.out.println(new ProgrammersSkillCheck().level3Problem2(8,2, new String[] {"D 2","C","U 3","C","D 4","C","U 2","Z","Z"}));
+		//System.out.println(new ProgrammersSkillCheck().level3Problem2(8,2, new String[] {"D 2","C","U 3","C","D 4","C","U 2","Z","Z","U 1","C"}));
+		
+		//System.out.println(new ProgrammersSkillCheck().level4Problem2(new int[][] {{5,3},{3,10},{10,6}}));
+		
+		System.out.println(new ProgrammersSkillCheck().level4Problem1(15));
+		
 	}
 	
+	public int level4Problem1(int n) {		
+		HashMap<Integer, Integer> availableSet = new HashMap<Integer, Integer>();
+		
+		for(int i = 1 ; i < 20; ++i){
+			for(int j = 0; j < i; ++j){
+				int val = (int)Math.pow(3, i-j) + 2 * (i+j);				
+				availableSet.put(val, 1);				
+			}			  
+		}
+		
+		if(availableSet.containsKey(n) == false){
+			return 0;
+		}
+		
+		return availableSet.get(n);		
+	}
+	
+	private int[][] memo;
+	public static final int MATRIX_CALC_DEFAULT_MAX_VAL = 1600000001;
+	
+	public int level4Problem2(int[][] matrix_sizes) {
+		
+		int n = matrix_sizes.length;
+		
+		memo = new int[n][n+1];
+		
+		for(int i = 0 ; i < n; ++i){
+			for(int j = 0 ; j < n+1; ++j){
+				memo[i][j] = -1;	
+			}
+		}
+		
+		return check(matrix_sizes, 0, n);		
+	}
+	private int check(int[][] matrix_sizes, int start, int finish) {
+		if(memo[start][finish] != -1){
+			return memo[start][finish];
+		}
+		
+		if(finish - start == 1){
+			return 0;
+		}
+		
+		int minVal = MATRIX_CALC_DEFAULT_MAX_VAL;
+		
+		int scoreBase = matrix_sizes[start][0]* matrix_sizes[finish-1][1];
+		for(int i = start + 1; i < finish; ++i){
+			minVal = Math.min(minVal, check(matrix_sizes, start, i) + check(matrix_sizes, i, finish) + scoreBase * matrix_sizes[i][0]);
+		}
+
+		memo[start][finish] = minVal;
+		return minVal;
+	}
+
 	public String level3Problem2(int n, int k, String[] cmd) {		
 		LinkedListNode[] nodes = new LinkedListNode[n];
 		
